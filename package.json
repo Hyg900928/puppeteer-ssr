@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "cross-env NODE_ENV=production  pm2 start ecosystem.config.js",
+    "restart": "pm2 restart ecosystem.config.js"
   },
   "keywords": [],
   "author": "",
@@ -12,6 +13,7 @@
   "dependencies": {
     "cacheman": "^2.2.1",
     "cacheman-file": "^0.2.1",
+    "cross-env": "^7.0.2",
     "express": "^4.17.1",
     "isbot": "^2.5.7",
     "md5": "^2.2.1",
