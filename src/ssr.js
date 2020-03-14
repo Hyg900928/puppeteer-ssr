@@ -36,7 +36,7 @@ const ssr = async (url) => {
 
   if(!browserWSEndpoint){
     browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       ignoreHTTPSErrors: true,
       args: [
         '--no-sandbox',
