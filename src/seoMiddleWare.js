@@ -10,7 +10,7 @@ const seoMiddleWare = () => {
     if(!isStaticDir){
       // 生成本地访问链接
       // const requestUrl = 'http://localhost:'+listenPort+req.url;
-      const requestUrl = 'https://www.cunxin.com'+req.url;
+      const requestUrl = 'https://www.heyungao.com'+req.url;
       // const requestUrl = 'https://juejin.im'+req.url;
       (async () => {
         try{
