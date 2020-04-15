@@ -17,6 +17,7 @@
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
     "md5": "^2.2.1",
-    "puppeteer": "^2.1.1"
+    "puppeteer": "^2.1.1",
+    "redis": "^3.0.2"
   }
 }
