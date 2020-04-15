@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     // First application
     {
-      name: 'puppeteer-ssr',
+      name: 'development',
       script: 'src/index.js',
       watch: true,
       env: {

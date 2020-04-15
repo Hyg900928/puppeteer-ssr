@@ -3,13 +3,13 @@ const Cacheman = require('cacheman');
 const md5 = require('md5');
 
 let browserWSEndpoint = null;
-let allInstances = [];
-
 
 const FilecCache = new Cacheman('htmls', {
   // 缓存3个小时
   ttl: 60 * 60 * 3,
-  engine: 'file',
+  port: 6379,
+  host: '127.0.0.1',
+  engine: 'redis',
 });
 
 const ssr = async (url) => {
@@ -37,12 +37,18 @@ const ssr = async (url) => {
   if(!browserWSEndpoint){
     browser = await puppeteer.launch({
       headless: true,
+
+      // 导航期间是否忽略HTTPS错误, 默认false
       ignoreHTTPSErrors: true,
+
+      // 去沙盒环境运行
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox'
       ],
     });
+
+    // 保存websocket 断点,以便后面可以直接连接浏览器
     browserWSEndpoint = await browser.wsEndpoint();
   }
   const page = await browser.newPage();
@@ -51,7 +57,7 @@ const ssr = async (url) => {
   await page.setRequestInterception(true);
 
   page.on('request', req => {
-
+    // console.log('url::resouceType', req.url(), '::::', req.resourceType());
     // 2. 忽略不必要的请求，如图片，视频样式等等
     const whitelist = ['document', 'script', 'xhr', 'fetch'];
     const blacklist = ['v5kf.com', 'analytics'];
@@ -68,24 +74,29 @@ const ssr = async (url) => {
     req.continue();
   });
   try {
-    await page.goto(url, {waitUntil: 'networkidle2', timeout: 5000});
+    // networkidle0 在 500ms 内没有任何网络连接
+    // networkidle2 在 500ms 内网络连接个数不超过 2 个
+    await page.goto(url, {waitUntil: 'networkidle0', timeout: 120000});
   } catch (e) {
     console.log(e)
   }
 
-  const html = await page.content(); // 获取HTML结构
+  // 获取HTML结构
+  const html = await page.content();
   await page.close();
-  await browser.close();
 
+  // 抓取时间
+  const renderTime = Date.now() - start;
 
-  const ttRenderMs = Date.now() - start;
-  console.info(`Headless rendered page in: ${ttRenderMs}ms`);
+  console.info(`Headless rendered page in: ${renderTime}ms`);
   let results = {
     html
   };
 
   // 写入缓存
-  await FilecCache.set(urlMd5, results);
+  await FilecCache.set(urlMd5, results, (err, value) => {
+    if(err) throw err;
+  });
   return results;
 };
 
