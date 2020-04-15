@@ -4,18 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production  pm2 start ecosystem.config.js",
-    "restart": "pm2 restart ecosystem.config.js"
+    "dev": "pm2 start ecosystem.config.js",
+    "start:prod": "cross-env NODE_ENV=production  pm2 start src/index.js --name ${npm_package_name}-prod",
+    "restart": "pm2 restart ${npm_package_name}-prod"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cacheman": "^2.2.1",
-    "cacheman-file": "^0.2.1",
+    "cacheman-redis": "^2.1.0",
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
-    "isbot": "^2.5.7",
     "md5": "^2.2.1",
     "puppeteer": "^2.1.1"
   }
