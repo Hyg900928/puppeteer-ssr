@@ -6,7 +6,7 @@ const seoMiddleWare = () => {
     const isStaticDir = req.url.indexOf('static/') > -1;
     if(!isStaticDir){
       // 生成本地访问链接
-      const requestUrl = 'https://www.cunxin.com'+req.url;
+      const requestUrl = 'https://heyungao.com'+req.url;
       try{
         var results = await ssr(requestUrl);
         res.send(results.html);
